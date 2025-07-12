@@ -91,9 +91,10 @@ Acceptance Criteria:
     def test_jira_integration_initialization(self):
         """Test JiraIntegration initialization with mocked environment."""
         # Mock the LangChain components to avoid actual API calls
-        with patch("jira_integration.JiraAction") as mock_jira_action, patch(
-            "jira_integration.ChatAnthropic"
-        ) as mock_chat_anthropic:
+        with (
+            patch("jira_integration.JiraAction") as mock_jira_action,
+            patch("jira_integration.ChatAnthropic") as mock_chat_anthropic,
+        ):
 
             # Configure mocks
             mock_jira_action.return_value = MagicMock()
