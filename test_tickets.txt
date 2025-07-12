@@ -1,0 +1,15 @@
+Story: [KITCH] Test Kitchen Task
+Parent: KITCH
+As a tester
+I want to test the dynamic epic discovery
+So that I can verify it works correctly.
+Acceptance Criteria:
+
+System should discover KITCH epic automatically
+System should link this story to the KITCH epic
+System should create proper dependency links
+
+Priority: Medium
+Dependencies: [PREP] Test Prep Task
+Estimated Effort: 1 hour
+Labels: test
