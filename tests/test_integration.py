@@ -4,7 +4,7 @@ import os
 import tempfile
 from unittest.mock import MagicMock, patch
 
-from parser import TextParser
+from parser import IssueType, TextParser
 
 
 class TestIntegration:
@@ -40,22 +40,38 @@ Acceptance Criteria:
 
         try:
             # Test parsing
-            parser = TextParser()
+            parser = TextParser(enable_llm_fallback=False)
             issues = parser.parse_file(temp_file)
 
-            # Verify results
-            assert len(issues) == 2
+            # Verify results - should have 2 epics and 1 story
+            assert len(issues) == 3
 
-            # Check epic
-            epic = issues[0]
-            assert epic.title == "TEST-EPIC - Test Epic Name"
-            assert "integration testing" in epic.description
+            # Find the issues
+            epics = [issue for issue in issues if issue.issue_type == IssueType.EPIC]
+            stories = [issue for issue in issues if issue.issue_type == IssueType.STORY]
+
+            assert len(epics) == 2
+            assert len(stories) == 1
+
+            # Check main epic
+            main_epic = next(
+                (
+                    epic
+                    for epic in epics
+                    if epic.epic_name == "TEST-EPIC - Test Epic Name"
+                ),
+                None,
+            )
+            assert main_epic is not None
+            assert main_epic.title == "TEST-EPIC - Test Epic Name"
+            assert "integration testing" in main_epic.description
             assert (
-                epic.business_outcome == "Validate the parsing and integration workflow"
+                main_epic.business_outcome
+                == "Validate the parsing and integration workflow"
             )
 
             # Check story
-            story = issues[1]
+            story = stories[0]
             assert story.title == "Integration Test Story"
             assert story.story_key == "TEST-1"
             assert len(story.acceptance_criteria) == 3

@@ -40,16 +40,33 @@ Acceptance Criteria:
 * Test criterion 1
 * Test criterion 2
 """
-        parser = TextParser()
+        parser = TextParser(enable_llm_fallback=False)
         issues = parser.parse_text(sample_text)
 
-        assert len(issues) == 1
-        story = issues[0]
-        assert story.issue_type == IssueType.STORY
+        # Should parse both the epic and the story
+        assert len(issues) == 2
+
+        # Find the story
+        story = None
+        epic = None
+        for issue in issues:
+            if issue.issue_type == IssueType.STORY and issue.title == "Test Story":
+                story = issue
+            elif issue.issue_type == IssueType.EPIC:
+                epic = issue
+
+        assert story is not None, "Story not found"
+        assert epic is not None, "Epic not found"
+
+        # Test story properties
         assert story.title == "Test Story"
         assert story.story_key == "TEST-1"
         assert len(story.acceptance_criteria) == 2
         assert story.acceptance_criteria[0].description == "Test criterion 1"
+        assert (
+            story.description
+            == "As a user I want to test the system So that I can verify it works"
+        )
 
     def test_parse_multiple_issues(self):
         """Test parsing multiple issues."""
@@ -71,12 +88,32 @@ Acceptance Criteria:
 * Test criterion 1
 * Test criterion 2
 """
-        parser = TextParser()
+        parser = TextParser(enable_llm_fallback=False)
         issues = parser.parse_text(sample_text)
 
-        assert len(issues) == 2
-        assert issues[0].issue_type == IssueType.EPIC
-        assert issues[1].issue_type == IssueType.STORY
+        assert len(issues) == 3
+
+        # Find the issues
+        epics = [issue for issue in issues if issue.issue_type == IssueType.EPIC]
+        stories = [issue for issue in issues if issue.issue_type == IssueType.STORY]
+
+        assert len(epics) == 2
+        assert len(stories) == 1
+
+        # Check the main epic
+        main_epic = next(
+            (epic for epic in epics if epic.epic_name == "TEST-EPIC - Test Epic Name"),
+            None,
+        )
+        assert main_epic is not None
+        assert main_epic.title == "TEST-EPIC - Test Epic Name"
+        assert main_epic.description == "This is a test epic description"
+
+        # Check the story
+        story = stories[0]
+        assert story.title == "Test Story"
+        assert story.story_key == "TEST-1"
+        assert len(story.acceptance_criteria) == 2
 
     def test_parse_empty_text(self):
         """Test parsing empty text."""
