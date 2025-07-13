@@ -205,14 +205,16 @@ class TextParser:
             # Check for Priority
             if line.startswith("Priority:"):
                 priority_str = line.replace("Priority:", "").strip()
-                if current_epic is not None:
+                if current_story is not None:
+                    current_story["priority"] = self._parse_priority(priority_str)
+                elif current_epic is not None:
                     current_epic["priority"] = self._parse_priority(priority_str)
                 in_description = False
                 in_business_outcome = False
                 continue
 
             # Check for Story section
-            if line.startswith("Story "):
+            if re.match(r"^Story \d+:", line):
                 if current_story:
                     self._finalize_story(current_story, current_acceptance_criteria)
                 current_story = {}

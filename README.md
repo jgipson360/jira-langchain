@@ -32,6 +32,12 @@ This project was born out of a very real need! I was facing a massive family hom
 
 ## Quick Start
 
+### Prerequisites
+
+- Python 3.9 or higher
+- A Jira instance with API access
+- (Optional) Anthropic API key for LLM enhancement
+
 ### 1. Setup
 
 ```bash
