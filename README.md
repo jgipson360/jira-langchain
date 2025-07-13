@@ -131,8 +131,8 @@ The tool also handles natural language descriptions thanks to LLM fallback:
 ```
 We need to clean up the kitchen and organize everything.
 
-First, we should deal with the pest control issue in the pantry.
-This involves removing all items, treating the area, and then restocking.
+First, we should deal with the organization issue in the pantry.
+This involves removing all items, cleaning the area, and then restocking.
 
 Then we need to deep clean all surfaces including:
 - Countertops and backsplash
